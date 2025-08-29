@@ -1,0 +1,39 @@
+name = "fedora-iot-rpi5"
+description = "Fedora IoT style disk: msdos, FAT boot + /boot + root"
+
+[customizations]
+hostname = "rpi5"
+
+[[customizations.user]]
+name = "alice"
+password = "bob"
+key = "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBLOFyezeUT9oLKLG7TMG98hnAqxaWaD0fiDqkZp+EW9vA9laXFeAn6kA6SZ6bfvwOeiitImDURXMxU1V+9XT+hE= hp@green.home"
+groups = ["wheel"]
+
+[customizations.kernel]
+append = "console=ttyAMA0,115200 console=tty1 rootwait rw"
+
+[customizations.disk]
+name = "disk"
+
+[[customizations.disk.partitions]]
+type = "plain"
+mountpoint = "/boot/firmware"
+minsize = "512 MiB"
+label = "bootfw"
+fs_type = "vfat"
+
+[[customizations.disk.partitions]]
+type = "plain"
+mountpoint = "/boot"
+minsize = "1 GiB"
+label = "boot"
+fs_type = "ext4"
+
+[[customizations.disk.partitions]]
+type = "plain"
+mountpoint = "/"
+minsize = "1 GiB"
+label = "root"
+fs_type = "xfs"
+
