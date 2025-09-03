@@ -5,7 +5,8 @@ This project is aimed to deploy Fedora IoT to Rpi5. At the time of writing, main
 # Todo
 - add rpi5 device tree, ...
 - Include rpi5 ethernet network compatible Kernel (drowel)
-- Verify if IoT is the only parent image that will boot with rpi
+- why no usb keyboard
+- 
 - Leverage Ignition for User commissioning
 - clean up ansible_role_rpi_sensor
 
@@ -48,26 +49,28 @@ ID                                     Status    Blueprint          Version   Ty
 $ sudo composer-cli compose image 0ddbc300-a30d-44a0-b579-eace5b30db25
 ```
 
-## Step 3: Deploy Rpi5 Devicetree
-Rpi5 is not supported yet by the mainline kernel and hence we need to hack the devicetree file into proper path.
-```
-$ mkdir sda1; mkdir sda2
-$ sudo mount /dev/sda1 sda1; sudo mount /dev/sda2 sda2
-$ sudo cp sda2/ostree/fedora-iot-8a08b76006845deb2c0376d33b936a66cf957865ff8e86d4ccb451563c31132d/dtb/broadcom/bcm2712-rpi-5-b.dtb sda1/.
-$ sudo umount /dev/sda*
-```
 
-## Step 4: Kernel for Rpi Network
+## Step 3: Kernel for Rpi Network
 Done in step 1.
 
 
-## Step 5: Flash the image to the SD Card
+## Step 4: Flash the image to the SD Card
 ```
 $ mount | grep sda
 $ umount /dev/sda*
 
 $ sudo arm-image-installer --image=0ddbc300-a30d-44a0-b579-eace5b30db25-image.raw.xz --media=/dev/sda --resizefs
 
+```
+
+
+## Step 5: Deploy Rpi5 Devicetree
+Rpi5 is not supported yet by the mainline kernel and hence we need to hack the devicetree file into proper path.
+```
+$ mkdir sda1; mkdir sda2
+$ sudo mount /dev/sda1 sda1; sudo mount /dev/sda2 sda2
+$ sudo cp sda2/ostree/fedora-iot-8a08b76006845deb2c0376d33b936a66cf957865ff8e86d4ccb451563c31132d/dtb/broadcom/bcm2712-rpi-5-b.dtb sda1/.
+$ sudo umount /dev/sda*
 ```
 
 
