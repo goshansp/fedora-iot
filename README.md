@@ -1,5 +1,5 @@
 # Scope
-This project is aimed to deploy Fedora IoT to Rpi5. At the time of writing, mainline Kernel does not support Rpi5 networking. 
+This project is aimed to deploy Fedora IoT to Rpi5. At the time of writing, mainline Kernel does not support Rpi5 networking. Hence we need a few tricks to get it working.
 
 
 # Todo
@@ -9,24 +9,6 @@ This project is aimed to deploy Fedora IoT to Rpi5. At the time of writing, main
 - Leverage Ignition for User commissioning
 - clean up ansible_role_rpi_sensor
 
-
-# Reference: How To Create SD Card for Rpi05 with official image (dupe from ansible_role_rpi_sensor)
-```
-wget https://download.fedoraproject.org/pub/alt/iot/42/IoT/aarch64/images/Fedora-IoT-raw-42-20250724.1.aarch64.raw.xz
-$ sudo rpm-ostree install arm-image-installer --apply-live
-# important: logout from any automounting gui sessions to avoid installation issues
-# or: $ sudo umount /dev/sda3; sudo umount /dev/sda5; (this also unmounted /dev/sda)
-
-# analysis
-xz -d Fedora-IoT-raw-42-20250724.1.aarch64.raw.xz
-
-$ fdisk -l ...
-Device                                    Boot   Start     End Sectors  Size Id Type
-Fedora-IoT-raw-42-20250724.1.aarch64.raw1 *      18432 1044479 1026048  501M  6 FAT16
-Fedora-IoT-raw-42-20250724.1.aarch64.raw2      1044480 3141631 2097152    1G 83 Linux
-Fedora-IoT-raw-42-20250724.1.aarch64.raw3      3141632 8402943 5261312  2.5G 83 Linux
-
-```
 
 ## Prepare Rpi5 as Build env / Classic Fedora 42
 ```
@@ -76,6 +58,7 @@ $ sudo umount /dev/sda*
 ```
 
 ## Step 4: Kernel for Rpi Network
+Done in step 1.
 
 
 ## Step 5: Flash the image to the SD Card
@@ -83,6 +66,27 @@ $ sudo umount /dev/sda*
 $ mount | grep sda
 $ umount /dev/sda*
 
-$ sudo arm-image-installer --image=0ddbc300-a30d-44a0-b579-eace5b30db25-image.raw.xz --media=/dev/sda --resizefs --addkey /home/hp/.ssh/id_ecdsa.pub
+$ sudo arm-image-installer --image=0ddbc300-a30d-44a0-b579-eace5b30db25-image.raw.xz --media=/dev/sda --resizefs
+
+```
+
+
+# Reference: How To Create SD Card for Rpi3&4 with official image (dupe from ansible_role_rpi_sensor)
+```
+wget https://download.fedoraproject.org/pub/alt/iot/42/IoT/aarch64/images/Fedora-IoT-raw-42-20250724.1.aarch64.raw.xz
+$ sudo rpm-ostree install arm-image-installer --apply-live
+# important: logout from any automounting gui sessions to avoid installation issues
+# or: $ sudo umount /dev/sda3; sudo umount /dev/sda5; (this also unmounted /dev/sda)
+
+# analysis
+xz -d Fedora-IoT-raw-42-20250724.1.aarch64.raw.xz
+
+$ fdisk -l Fedora-IoT-raw-42-20250724.1.aarch64.raw
+Device                                    Boot   Start     End Sectors  Size Id Type
+Fedora-IoT-raw-42-20250724.1.aarch64.raw1 *      18432 1044479 1026048  501M  6 FAT16
+Fedora-IoT-raw-42-20250724.1.aarch64.raw2      1044480 3141631 2097152    1G 83 Linux
+Fedora-IoT-raw-42-20250724.1.aarch64.raw3      3141632 8402943 5261312  2.5G 83 Linux
+
+$ sudo arm-image-installer --image=Fedora-IoT-raw-42-20250724.1.aarch64.raw.xz --media=/dev/sda --resizefs --addkey /home/hp/.ssh/id_ecdsa.pub
 
 ```

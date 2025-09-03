@@ -1,6 +1,6 @@
 name = "custom-fiot-rpi5"
-description = "Custom Fedora IoT image"
-version = "0.0.7"
+description = "Custom Fedora IoT image for Raspberry Pi 5"
+version = "0.0.8"
 
 [[packages]]
 name = "nano"
@@ -17,3 +17,8 @@ name = "hp"
 key = "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBLOFyezeUT9oLKLG7TMG98hnAqxaWaD0fiDqkZp+EW9vA9laXFeAn6kA6SZ6bfvwOeiitImDURXMxU1V+9XT+hE= hp@green.home"
 description = "Local User"
 groups = ["wheel"]
+
+[[customizations.files]]
+path = "/boot/bcm2712-rpi-5-b.dtb"
+mode = 0644
+source = "file:///home/hp/git/dtb/bcm2712-rpi-5-b.dtb"
