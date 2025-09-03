@@ -1,0 +1,19 @@
+name = "custom-fiot-rpi5"
+description = "Custom Fedora IoT image"
+version = "0.0.7"
+
+[[packages]]
+name = "nano"
+
+# TODO: Remove for production
+[[customizations.user]]
+name = "devuser"
+description = "Local IoT User for development"
+password = "plaintext"
+groups = ["wheel"]
+
+[[customizations.user]]
+name = "hp"
+key = "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBLOFyezeUT9oLKLG7TMG98hnAqxaWaD0fiDqkZp+EW9vA9laXFeAn6kA6SZ6bfvwOeiitImDURXMxU1V+9XT+hE= hp@green.home"
+description = "Local User"
+groups = ["wheel"]
