@@ -1,0 +1,34 @@
+{
+  "ignition": {
+    "version": "3.3.0"
+  },
+  "passwd": {
+    "users": [
+      {
+        "groups": [
+          "wheel"
+        ],
+        "name": "hp",
+        "sshAuthorizedKeys": [
+          "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBLOFyezeUT9oLKLG7TMG98hnAqxaWaD0fiDqkZp+EW9vA9laXFeAn6kA6SZ6bfvwOeiitImDURXMxU1V+9XT+hE= hp@green.home"
+        ]
+      }
+    ]
+  },
+  "storage": {
+    "files": [
+      {
+        "path": "/etc/hostname",
+        "mode": 420,
+        "overwrite": true,
+        "contents": { "source": "data:,rpi5-staging" }
+      }
+    ],
+    "links": [
+      {
+        "path": "/etc/localtime",
+        "target": "../usr/share/zoneinfo/Europe/Zurich"
+      }
+    ]
+  }
+}
