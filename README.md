@@ -2,6 +2,10 @@
 This project is aimed to deploy Fedora IoT to Rpi5. At the time of writing, mainline Kernel does not support Rpi5 networking. Hence we need a few tricks to get it working.
 
 
+# Next
+Is it possible to inject the copr/dwrobel-kernel into /boot? ... how can we achieve that?
+
+
 # Todo
 - add rpi5 device tree, ...
 - Include rpi5 ethernet network compatible Kernel (drowel)
@@ -49,10 +53,8 @@ ID                                     Status    Blueprint          Version   Ty
 $ sudo composer-cli compose image 0ddbc300-a30d-44a0-b579-eace5b30db25
 ```
 
-
 ## Step 3: Kernel for Rpi Network
 Done in step 1.
-
 
 ## Step 4: Flash the image to the SD Card
 ```
@@ -62,7 +64,6 @@ $ umount /dev/sda*
 $ sudo arm-image-installer --image=0ddbc300-a30d-44a0-b579-eace5b30db25-image.raw.xz --media=/dev/sda --resizefs
 
 ```
-
 
 ## Step 5: Deploy Rpi5 Devicetree
 Rpi5 is not supported yet by the mainline kernel and hence we need to hack the devicetree file into proper path.
@@ -93,3 +94,9 @@ Fedora-IoT-raw-42-20250724.1.aarch64.raw3      3141632 8402943 5261312  2.5G 83 
 $ sudo arm-image-installer --image=Fedora-IoT-raw-42-20250724.1.aarch64.raw.xz --media=/dev/sda --resizefs --addkey /home/hp/.ssh/id_ecdsa.pub
 
 ```
+
+
+# ADR
+
+## No Bootc
+Bootc cannot apparently create 'iot-raw-xz' and 'composer' cannot feed off container images. Hence we stick with the old process until bootc achieves feature parity (rpi compatibility with the fat partition)?
