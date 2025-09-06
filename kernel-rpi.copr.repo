@@ -1,6 +1,6 @@
 [copr.fedorainfracloud.org:dwrobel:kernel-rpi]
 name=Copr repo for kernel-rpi owned by dwrobel
-# TODO: Rid hardcoded -42-
+# TODO: Rid hardcoded $releasever
 baseurl=https://download.copr.fedorainfracloud.org/results/dwrobel/kernel-rpi/fedora-42-$basearch/
 type=rpm-md
 skip_if_unavailable=True

@@ -2,10 +2,12 @@ include: fedora-iot-base.yaml
 ref: fedora/stable/${basearch}/iot
 repos:
 - fedora-42
-- copr.fedorainfracloud.org:dwrobel:kernel-rpi
+- local.goshansp:kernel-rpi
 
 packages:
-  - kernel
+  - kernel-rpi4
   - kernel-core
   - kernel-modules
   - kernel-modules-extra
+
+add-files:

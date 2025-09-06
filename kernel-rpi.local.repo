@@ -1,0 +1,5 @@
+[local.goshansp:kernel-rpi]
+name=local repo for kernel-rpi owned by goshansp
+baseurl=file://home/hp/rpmbuild/RPMS
+gpgcheck=0
+enabled=1

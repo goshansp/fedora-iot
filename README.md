@@ -1,5 +1,5 @@
 # Scope
-This project is aimed to deploy Fedora IoT to Rpi5. At the time of writing, mainline Kernel does not support Rpi5 networking. Hence we need a few tricks to get it working.
+This project is aimed to deploy Fedora IoT to Rpi5. At the time of writing, mainline Kernel does not support Rpi5 networking. Hence we need to fix `kernel-rpi` to bake into the image.
 
 
 # Next
@@ -21,7 +21,7 @@ $ sudo dnf install git ostree rpm-ostree composer-cli osbuild-composer
 $ sudo systemctl enable osbuild-composer.socket && sudo systemctl start osbuild-composer.socket
 ```
 
-## Compile Custom Kernel and create local repo
+## Compile Kernel-Rpi and create local repo
 Build time on x86 failed after 154 minutes. On Rpi5 it took 63 minutes.
 ```
 $ git clone git@github.com:goshansp/kernel-rpi.git
@@ -52,7 +52,7 @@ mock -r fedora-42-aarch64 \
 
 $ ls /home/hp/rpmbuild/RPMS
 
-$ createrepo ~/rpmbuild/RPMS ?
+$ createrepo ~/rpmbuild/RPMS
 ```
 
 ## Step 1: Compose the Ostree Filesystem (on aarch64)
