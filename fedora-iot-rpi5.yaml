@@ -5,9 +5,9 @@ repos:
 - local.goshansp:kernel-rpi
 
 packages:
-  - kernel-rpi4
-  - kernel-core
-  - kernel-modules
-  - kernel-modules-extra
+  - kernel-6.12.42-1.rpi.fc42.aarch64
+  - kernel-core-6.12.42-1.rpi.fc42.aarch64
+  - kernel-modules-6.12.42-1.rpi.fc42.aarch64
+  - kernel-modules-extra-6.12.42-1.rpi.fc42.aarch64
 
 add-files:

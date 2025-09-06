@@ -15,14 +15,14 @@ Is it possible to inject the copr/dwrobel-kernel into /boot? ... how can we achi
 - clean up ansible_role_rpi_sensor
 
 
-## Prepare Rpi5 as Build env / Classic Fedora 42
+## Step -3: Prepare Rpi5 as Build env / Classic Fedora 42
 ```
 $ sudo dnf install git ostree rpm-ostree composer-cli osbuild-composer
 $ sudo systemctl enable osbuild-composer.socket && sudo systemctl start osbuild-composer.socket
 ```
 
-## Compile Kernel-Rpi and create local repo
-Build time on x86 failed after 154 minutes. On Rpi5 it took 63 minutes.
+## Step -2: Compile Kernel-Rpi and create local repo
+Build time on x86 aborted after 167 minutes. On Rpi5 it took 63 minutes.
 ```
 $ git clone git@github.com:goshansp/kernel-rpi.git
 $ toolbox enter
@@ -33,13 +33,20 @@ $ curl -L https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.12.tar.xz -o ~/rp
 $ curl -L https://cdn.kernel.org/pub/linux/kernel/v6.x/patch-6.12.42.xz -o ~/rpmbuild/SOURCES/patch-6.12.42.xz
 $ sudo usermod -aG mock hp
 
-# aarch64
+# aarch64 (full) - 63 minutes
 mock -r fedora-42-aarch64 \
      --spec ~/rpmbuild/SOURCES/kernel.spec \
      --sources ~/rpmbuild/SOURCES/ \
      --resultdir ~/rpmbuild/RPMS \
      --buildsrpm --rebuild \
      --isolation=simple
+
+# Rebuild Only?
+mock -r fedora-42-aarch64 \
+    --spec ~/rpmbuild/SOURCES/kernel.spec \
+    --sources ~/rpmbuild/SOURCES/ \
+    --resultdir ~/rpmbuild/RPMS \
+    --rebuild ~/rpmbuild/RPMS/kernel-6.12.42-1.rpi.fc42.src.rpm
 
 # x86
 mock -r fedora-42-aarch64 \
@@ -55,13 +62,21 @@ $ ls /home/hp/rpmbuild/RPMS
 $ createrepo ~/rpmbuild/RPMS
 ```
 
+## Step -1: Establish Ostree Compatibility for Kernel-Rpi
+During `ostree compose tree` we're hitting an empty `/usr/lib/modules` that needs population from `/lib/modules`.
+```
+error: Postprocessing and committing: Finalizing rootfs: During kernel processing: /usr/lib/modules is empty
+
+
+```
+
 ## Step 1: Compose the Ostree Filesystem (on aarch64)
 Treefile Reference: https://coreos.github.io/rpm-ostree/treefile/
 ```
 $ git clone -b "f42" https://pagure.io/fedora-iot/ostree.git
 $ cd ostree
 $ ostree init --repo=repo --mode=archive
-$ cp ../fedora-iot-rpi5.yaml .; cp ../kernel-rpi.repo .
+$ cp ../fedora-iot/fedora-iot-rpi5.yaml ../fedora-iot/kernel-rpi.local.repo .
 
 $ sudo rpm-ostree compose tree --repo=./repo --unified-core fedora-iot-rpi5.yaml
 
