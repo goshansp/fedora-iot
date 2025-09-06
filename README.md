@@ -21,8 +21,42 @@ $ sudo dnf install git ostree rpm-ostree composer-cli osbuild-composer
 $ sudo systemctl enable osbuild-composer.socket && sudo systemctl start osbuild-composer.socket
 ```
 
+## Compile Custom Kernel and create local repo
+Build time on x86 failed after 154 minutes. On Rpi5 it took 63 minutes.
+```
+$ git clone git@github.com:goshansp/kernel-rpi.git
+$ toolbox enter
+$ dnf install mock
+$ mkdir ~/rpmbuild; mkdir ~/rpmbuild/SOURCES/
+$ cp * ~/rpmbuild/SOURCES/. -r
+$ curl -L https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.12.tar.xz -o ~/rpmbuild/SOURCES/linux-6.12.tar.xz
+$ curl -L https://cdn.kernel.org/pub/linux/kernel/v6.x/patch-6.12.42.xz -o ~/rpmbuild/SOURCES/patch-6.12.42.xz
+$ sudo usermod -aG mock hp
+
+# aarch64
+mock -r fedora-42-aarch64 \
+     --spec ~/rpmbuild/SOURCES/kernel.spec \
+     --sources ~/rpmbuild/SOURCES/ \
+     --resultdir ~/rpmbuild/RPMS \
+     --buildsrpm --rebuild \
+     --isolation=simple
+
+# x86
+mock -r fedora-42-aarch64 \
+     --spec ~/rpmbuild/SOURCES/kernel.spec \
+     --sources ~/rpmbuild/SOURCES/ \
+     --resultdir ~/rpmbuild/RPMS \
+     --define "_smp_mflags -j$(nproc)" \
+     --define "_memusage_limit 8192" \
+     --buildsrpm --rebuild
+
+$ ls /home/hp/rpmbuild/RPMS
+
+$ createrepo ~/rpmbuild/RPMS ?
+```
 
 ## Step 1: Compose the Ostree Filesystem (on aarch64)
+Treefile Reference: https://coreos.github.io/rpm-ostree/treefile/
 ```
 $ git clone -b "f42" https://pagure.io/fedora-iot/ostree.git
 $ cd ostree
