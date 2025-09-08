@@ -60,6 +60,13 @@ mock -r fedora-42-aarch64 \
 $ ls /home/hp/rpmbuild/RPMS
 
 $ createrepo ~/rpmbuild/RPMS
+
+# the below two lines before the DO IT section ... on the kernel.spec
+mkdir -p %{buildroot}/usr/lib/modules/$KernelVer
+cp -a %{buildroot}/lib/modules/$KernelVer/* %{buildroot}/usr/lib/modules/$KernelVer/
+
+or could we deploy 6.17-rc4? if so, how? can we just deploy a fedora 44 iot image to rpi?
+
 ```
 
 ## Step -1: Establish Ostree Compatibility for Kernel-Rpi
@@ -114,7 +121,7 @@ $ sudo arm-image-installer --image=0ddbc300-a30d-44a0-b579-eace5b30db25-image.ra
 
 ```
 
-## Step 5: Deploy Rpi5 Devicetree
+## Step 5: Deploy Rpi5 Devicetree to sd card
 Rpi5 is not supported yet by the mainline kernel and hence we need to hack the devicetree file into proper path.
 ```
 $ mkdir sda1; mkdir sda2
@@ -139,6 +146,12 @@ Device                                    Boot   Start     End Sectors  Size Id 
 Fedora-IoT-raw-42-20250724.1.aarch64.raw1 *      18432 1044479 1026048  501M  6 FAT16
 Fedora-IoT-raw-42-20250724.1.aarch64.raw2      1044480 3141631 2097152    1G 83 Linux
 Fedora-IoT-raw-42-20250724.1.aarch64.raw3      3141632 8402943 5261312  2.5G 83 Linux
+
+$ sudo kpartx -av 7d5369d1-2f19-4cbf-8d47-4121d8d71e7e-image.raw
+$ mkdir mnt_sda2
+$ sudo mount /dev/mapper/loop0p2 mnt_sda2/
+...
+$ sudo umount /dev/mapper/loop0p*
 
 $ sudo arm-image-installer --image=Fedora-IoT-raw-42-20250724.1.aarch64.raw.xz --media=/dev/sda --resizefs --addkey /home/hp/.ssh/id_ecdsa.pub
 
