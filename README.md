@@ -2,7 +2,7 @@
 This project is aimed to deploy Fedora IoT to Rpi5. At the time of writing, mainline Kernel does not support Rpi5 networking. Hence we need to fix `kernel-rpi` to bake into the image.
 
 
-# Showstop: Mainline Support
+# Showstop 1: Mainline Support
 the following article states that we may expect rpi5-eth support with 6.18 
 
 https://www.phoronix.com/news/Raspberry-Pi-5-Ethernet-Linux
@@ -14,10 +14,6 @@ https://en.wikipedia.org/wiki/Linux_kernel_version_history
 should we wait for 6.18 to go with fedora-iot or is there a way to deploy fedora-iot to rpi5 today?
 
 
-# Next
-Is it possible to inject the copr/dwrobel-kernel into /boot? ... how can we achieve that?
-
-
 # Todo
 - add rpi5 device tree, ...
 - test network, usb
@@ -26,13 +22,13 @@ Is it possible to inject the copr/dwrobel-kernel into /boot? ... how can we achi
 - clean up ansible_role_rpi_sensor
 
 
-## Step -3: Prepare Rpi5 as Build env / Classic Fedora 42
+## Prepare Rpi5 as Build env / Classic Fedora 42
 ```
 $ sudo dnf install git ostree rpm-ostree composer-cli osbuild-composer
 $ sudo systemctl enable osbuild-composer.socket && sudo systemctl start osbuild-composer.socket
 ```
 
-## Step -2: Compile Kernel-Rpi and create local repo
+## Attempt 0: Compile Kernel-Rpi and create local repo
 Build time on x86 aborted after 167 minutes. On Rpi5 it took 63 minutes.
 ```
 $ git clone git@github.com:goshansp/kernel-rpi.git
@@ -73,7 +69,7 @@ or could we deploy 6.17-rc4? if so, how? can we just deploy a fedora 44 iot imag
 
 ```
 
-## Step -1: Establish Ostree Compatibility for Kernel-Rpi
+## Showstop 2: Establish Ostree Compatibility for Dwrowels's Kernel-Rpi
 During `ostree compose tree` we're hitting an empty `/usr/lib/modules` that needs population from `/lib/modules`.
 ```
 error: Postprocessing and committing: Finalizing rootfs: During kernel processing: /usr/lib/modules is empty
