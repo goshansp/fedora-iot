@@ -2,14 +2,25 @@
 This project is aimed to deploy Fedora IoT to Rpi5. At the time of writing, mainline Kernel does not support Rpi5 networking. Hence we need to fix `kernel-rpi` to bake into the image.
 
 
+# Showstop: Mainline Support
+the following article states that we may expect rpi5-eth support with 6.18 
+
+https://www.phoronix.com/news/Raspberry-Pi-5-Ethernet-Linux
+
+we anticipate the release of 6.18 to november 2025 based on 
+
+https://en.wikipedia.org/wiki/Linux_kernel_version_history
+
+should we wait for 6.18 to go with fedora-iot or is there a way to deploy fedora-iot to rpi5 today?
+
+
 # Next
 Is it possible to inject the copr/dwrobel-kernel into /boot? ... how can we achieve that?
 
 
 # Todo
 - add rpi5 device tree, ...
-- Include rpi5 ethernet network compatible Kernel (drowel)
-- why no usb keyboard
+- test network, usb
 - 
 - Leverage Ignition for User commissioning
 - clean up ansible_role_rpi_sensor
@@ -41,13 +52,6 @@ mock -r fedora-42-aarch64 \
      --buildsrpm --rebuild \
      --isolation=simple
 
-# Rebuild Only?
-mock -r fedora-42-aarch64 \
-    --spec ~/rpmbuild/SOURCES/kernel.spec \
-    --sources ~/rpmbuild/SOURCES/ \
-    --resultdir ~/rpmbuild/RPMS \
-    --rebuild ~/rpmbuild/RPMS/kernel-6.12.42-1.rpi.fc42.src.rpm
-
 # x86
 mock -r fedora-42-aarch64 \
      --spec ~/rpmbuild/SOURCES/kernel.spec \
@@ -73,7 +77,6 @@ or could we deploy 6.17-rc4? if so, how? can we just deploy a fedora 44 iot imag
 During `ostree compose tree` we're hitting an empty `/usr/lib/modules` that needs population from `/lib/modules`.
 ```
 error: Postprocessing and committing: Finalizing rootfs: During kernel processing: /usr/lib/modules is empty
-
 
 ```
 
@@ -124,9 +127,9 @@ $ sudo arm-image-installer --image=0ddbc300-a30d-44a0-b579-eace5b30db25-image.ra
 ## Step 5: Deploy Rpi5 Devicetree to sd card
 Rpi5 is not supported yet by the mainline kernel and hence we need to hack the devicetree file into proper path.
 ```
-$ mkdir sda1; mkdir sda2
-$ sudo mount /dev/sda1 sda1; sudo mount /dev/sda2 sda2
-$ sudo cp sda2/ostree/fedora-iot-8a08b76006845deb2c0376d33b936a66cf957865ff8e86d4ccb451563c31132d/dtb/broadcom/bcm2712-rpi-5-b.dtb sda1/.
+$ mkdir mnt_sda1; mkdir mnt_sda2
+$ sudo mount /dev/sda1 mnt_sda1; sudo mount /dev/sda2 mnt_sda2
+$ sudo cp mnt_sda2/ostree/fedora-iot-b10ed9207240cf8b07fe439a948667e42edff28aa319805c99980e19fb13cafc/dtb/broadcom/bcm2712-rpi-5-b* mnt_sda1/.
 $ sudo umount /dev/sda*
 ```
 
